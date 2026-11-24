@@ -71,7 +71,9 @@ img { display: block; max-width: 100%; }
   height: var(--frame-h);
   display: flex; align-items: center; justify-content: space-between;
   padding: 0 2.5rem;
-  background: var(--white);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--black);
   mix-blend-mode: normal;
 }
@@ -91,7 +93,9 @@ img { display: block; max-width: 100%; }
   height: var(--frame-h);
   display: flex; align-items: center;
   padding: 0 2.5rem; gap: 2.5rem;
-  background: var(--white);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-top: 1px solid var(--black);
 }
 
@@ -159,10 +163,10 @@ section:first-of-type { padding-top: calc(var(--frame-h) + 2rem); }
 
 .hero-headline {
   font-family: var(--display);
-  font-size: clamp(5rem, 18vw, 18rem);
-  line-height: 0.88;
+  font-size: clamp(4.5rem, 16vw, 16rem);
+  line-height: 0.9;
   letter-spacing: -0.01em;
-  margin-bottom: 3rem;
+  margin-bottom: 2.5rem;
   user-select: none;
 }
 .hero-headline .line { display: block; overflow: hidden; }
@@ -191,29 +195,31 @@ section:first-of-type { padding-top: calc(var(--frame-h) + 2rem); }
 }
 .collage-item {
   position: absolute;
-  filter: grayscale(100%);
   overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.12);
 }
 .c1 {
-  right: 5%; top: 15%;
-  width: clamp(120px, 20vw, 260px);
-  height: clamp(120px, 20vw, 260px);
+  right: 5%; top: 18%;
+  width: clamp(140px, 24vw, 280px);
+  height: clamp(140px, 24vw, 280px);
   border: 1px solid var(--black);
+  transform: rotate(3deg);
+  transition: transform 0.4s ease;
 }
 .c1 img { width: 100%; height: 100%; object-fit: cover; }
 
 .c2 {
-  right: 25%; bottom: 15%;
-  width: clamp(80px, 10vw, 140px);
+  right: 22%; bottom: 18%;
+  width: clamp(90px, 12vw, 150px);
   height: clamp(120px, 16vw, 200px);
   background: var(--black);
-  opacity: 0.08;
+  opacity: 0.06;
 }
 .c3 {
-  right: 10%; bottom: 20%;
-  width: clamp(60px, 8vw, 100px);
-  height: clamp(60px, 8vw, 100px);
-  border: 1px solid #ccc;
+  right: 8%; bottom: 15%;
+  width: clamp(70px, 10vw, 110px);
+  height: clamp(70px, 10vw, 110px);
+  border: 1px solid #222;
   border-radius: 50%;
   overflow: hidden;
 }
@@ -335,9 +341,121 @@ section:first-of-type { padding-top: calc(var(--frame-h) + 2rem); }
 
 .edu-num { font-size: 2.5rem; font-weight: 600; color: #e0e0e0; text-align: right; padding-top: 0.1rem; }
 
-@media (max-width: 600px) {
-  .edu-item { grid-template-columns: 1fr; gap: 0.5rem; }
-  .edu-num { display: none; }
+/* ═══════════════════════════════════════════
+   RESPONSIVE & MOBILE POLISH
+═══════════════════════════════════════════ */
+@media (max-width: 768px) {
+  :root {
+    --frame-h: 50px;
+  }
+
+  body {
+    cursor: auto; /* tắt custom cursor trên màn hình cảm ứng để mượt mà */
+  }
+
+  .cursor-dot, .cursor-ring {
+    display: none !important;
+  }
+
+  .frame-top, .frame-bottom {
+    padding: 0 1.25rem;
+  }
+
+  .frame-bottom {
+    gap: 1.25rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+  }
+
+  .copy {
+    display: none;
+  }
+
+  .rotating-badge {
+    display: none; /* Tránh che mất nút hoặc chữ trên màn hình nhỏ */
+  }
+
+  section {
+    padding: calc(var(--frame-h) + 2.5rem) 1.25rem 4rem;
+    min-height: auto;
+  }
+
+  .hero {
+    min-height: calc(100vh - var(--frame-h));
+    justify-content: center;
+    padding-top: var(--frame-h);
+  }
+
+  .hero-inner {
+    padding: 0;
+  }
+
+  .hero-headline {
+    font-size: clamp(3.8rem, 18vw, 6.5rem);
+    margin-bottom: 2rem;
+  }
+
+  .hero-collage {
+    position: relative;
+    inset: auto;
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+    pointer-events: auto;
+  }
+
+  .collage-item.c1 {
+    position: relative;
+    right: auto;
+    top: auto;
+    width: 220px;
+    height: 220px;
+    transform: rotate(0deg);
+  }
+
+  .collage-item.c2, .collage-item.c3 {
+    display: none;
+  }
+
+  .grid-2 {
+    gap: 2.5rem;
+  }
+
+  .about-img-wrap {
+    max-width: 100%;
+  }
+
+  .about-img {
+    aspect-ratio: 4/5;
+  }
+
+  .stats-row {
+    gap: 1.5rem;
+    justify-content: space-between;
+  }
+
+  .stat-big {
+    font-size: 2.2rem;
+  }
+
+  .section-heading {
+    font-size: clamp(2.5rem, 12vw, 4rem);
+  }
+
+  .edu-item {
+    padding: 1.5rem 0;
+  }
+
+  .contact-cta {
+    font-size: clamp(3.2rem, 14vw, 5.5rem);
+    margin: 1.5rem 0 2.5rem;
+  }
+
+  .contact-details {
+    gap: 2rem;
+    flex-direction: column;
+  }
 }
 
 /* ═══════════════════════════════════════════

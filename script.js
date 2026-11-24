@@ -1,35 +1,38 @@
 // ═══════════════════════════════════════
 // CUSTOM CURSOR
 // ═══════════════════════════════════════
-const dot = document.createElement('div');
-const ring = document.createElement('div');
-dot.className = 'cursor-dot';
-ring.className = 'cursor-ring';
-document.body.append(dot, ring);
+// Only run custom cursor on desktop devices with pointer
+if (window.matchMedia('(pointer: fine)').matches) {
+  const dot = document.createElement('div');
+  const ring = document.createElement('div');
+  dot.className = 'cursor-dot';
+  ring.className = 'cursor-ring';
+  document.body.append(dot, ring);
 
-let mx = 0, my = 0, rx = 0, ry = 0;
-document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
 
-function animateCursor() {
-  rx += (mx - rx) * 0.12;
-  ry += (my - ry) * 0.12;
-  dot.style.left = mx + 'px'; dot.style.top = my + 'px';
-  ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+  function animateCursor() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    dot.style.left = mx + 'px'; dot.style.top = my + 'px';
+    ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
 
-  // change cursor color in dark contact section
-  const contact = document.getElementById('contact');
-  if (contact) {
-    const rect = contact.getBoundingClientRect();
-    document.body.classList.toggle('contact-section', my >= rect.top);
+    // change cursor color in dark contact section
+    const contact = document.getElementById('contact');
+    if (contact) {
+      const rect = contact.getBoundingClientRect();
+      document.body.classList.toggle('contact-section', my >= rect.top);
+    }
+    requestAnimationFrame(animateCursor);
   }
-  requestAnimationFrame(animateCursor);
-}
-animateCursor();
+  animateCursor();
 
-document.querySelectorAll('a, button, .edu-item').forEach(el => {
-  el.addEventListener('mouseenter', () => ring.classList.add('hover'));
-  el.addEventListener('mouseleave', () => ring.classList.remove('hover'));
-});
+  document.querySelectorAll('a, button, .edu-item').forEach(el => {
+    el.addEventListener('mouseenter', () => ring.classList.add('hover'));
+    el.addEventListener('mouseleave', () => ring.classList.remove('hover'));
+  });
+}
 
 // ═══════════════════════════════════════
 // SCROLL REVEAL
