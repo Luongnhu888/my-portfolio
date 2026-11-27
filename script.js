@@ -1,78 +1,118 @@
-// ═══════════════════════════════════════
-// CUSTOM CURSOR
-// ═══════════════════════════════════════
-// Only run custom cursor on desktop devices with pointer
-if (window.matchMedia('(pointer: fine)').matches) {
-  const dot = document.createElement('div');
-  const ring = document.createElement('div');
-  dot.className = 'cursor-dot';
-  ring.className = 'cursor-ring';
-  document.body.append(dot, ring);
+// ═══════════════════════════════════════════
+// FIXED SCENE SCROLL ENGINE
+// ═══════════════════════════════════════════
 
-  let mx = 0, my = 0, rx = 0, ry = 0;
-  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+const scenes = [
+  document.getElementById('sceneHero'),
+  document.getElementById('sceneMarquee'),
+  document.getElementById('sceneAbout'),
+  document.getElementById('sceneEdu'),
+  document.getElementById('sceneContact')
+];
 
-  function animateCursor() {
-    rx += (mx - rx) * 0.12;
-    ry += (my - ry) * 0.12;
-    dot.style.left = mx + 'px'; dot.style.top = my + 'px';
-    ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+const navSteps = document.querySelectorAll('.nav-step');
+const glow1 = document.querySelector('.glow-1');
+const glow2 = document.querySelector('.glow-2');
+const glow3 = document.querySelector('.glow-3');
+let currentSceneIndex = 0;
 
-    // change cursor color in dark contact section
-    const contact = document.getElementById('contact');
-    if (contact) {
-      const rect = contact.getBoundingClientRect();
-      document.body.classList.toggle('contact-section', my >= rect.top);
+// Update Scene Transition smoothly based on Scroll Percentage
+function updateScrollExperience() {
+  const scrollY = window.scrollY;
+  const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+  const progress = Math.max(0, Math.min(scrollY / (maxScroll || 1), 1));
+
+  // Determine active scene (5 scenes: 0.0 -> 1.0)
+  const totalScenes = scenes.length;
+  let activeIndex = Math.floor(progress * totalScenes);
+  if (activeIndex >= totalScenes) activeIndex = totalScenes - 1;
+
+  if (activeIndex !== currentSceneIndex) {
+    currentSceneIndex = activeIndex;
+    scenes.forEach((scene, i) => {
+      scene.classList.toggle('active', i === currentSceneIndex);
+    });
+
+    navSteps.forEach((step, i) => {
+      step.classList.toggle('active', i === currentSceneIndex);
+    });
+
+    // Dark mode transition for Contact Scene
+    document.body.classList.toggle('contact-active', currentSceneIndex === 4);
+
+    // Trigger counters on About Scene
+    if (currentSceneIndex === 2) {
+      animateCounters();
     }
-    requestAnimationFrame(animateCursor);
   }
-  animateCursor();
 
-  document.querySelectorAll('a, button, .edu-item').forEach(el => {
-    el.addEventListener('mouseenter', () => ring.classList.add('hover'));
-    el.addEventListener('mouseleave', () => ring.classList.remove('hover'));
+  // Dynamic ambient glow parallax based on scroll
+  if (glow1 && glow2 && glow3) {
+    glow1.style.transform = `translate(${progress * -80}px, ${progress * 150}px) scale(${1 + progress * 0.3})`;
+    glow2.style.transform = `translate(${progress * 100}px, ${progress * -120}px) scale(${1 - progress * 0.2})`;
+    glow3.style.transform = `translate(${Math.sin(progress * Math.PI) * 120}px, ${progress * 80}px)`;
+  }
+}
+
+window.addEventListener('scroll', updateScrollExperience, { passive: true });
+updateScrollExperience(); // Initial run
+
+// Click on left navigation steps to smoothly jump to scenes
+navSteps.forEach(step => {
+  step.addEventListener('click', () => {
+    const targetIdx = parseInt(step.dataset.step, 10);
+    const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+    const targetScroll = (targetIdx / (scenes.length - 1)) * maxScroll;
+    window.scrollTo({ top: targetScroll, behavior: 'smooth' });
+  });
+});
+
+// Navigation Contact link click
+const navContactLink = document.getElementById('navContactLink');
+if (navContactLink) {
+  navContactLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+    window.scrollTo({ top: maxScroll, behavior: 'smooth' });
   });
 }
 
-// ═══════════════════════════════════════
-// SCROLL REVEAL
-// ═══════════════════════════════════════
-const revealEls = document.querySelectorAll('[data-reveal]');
-const revealObs = new IntersectionObserver((entries) => {
-  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); revealObs.unobserve(e.target); } });
-}, { threshold: 0.15 });
-revealEls.forEach(el => revealObs.observe(el));
+// ═══════════════════════════════════════════
+// 3D TILT EFFECT FOR HERO CARD
+// ═══════════════════════════════════════════
+const heroVisualWrap = document.getElementById('heroVisualWrap');
+if (heroVisualWrap && window.matchMedia('(pointer: fine)').matches) {
+  window.addEventListener('mousemove', (e) => {
+    if (currentSceneIndex !== 0) return;
+    const { innerWidth, innerHeight } = window;
+    const x = (e.clientX / innerWidth - 0.5) * 2;
+    const y = (e.clientY / innerHeight - 0.5) * 2;
+    heroVisualWrap.style.transform = `rotateY(${x * 14}deg) rotateX(${-y * 14}deg) translateY(-50%)`;
+  });
+}
 
-// Add data-reveal to key elements dynamically
-document.querySelectorAll('.edu-item, .contact-col, .about-right > *').forEach((el, i) => {
-  el.setAttribute('data-reveal', i < 3 ? `delay-${i}` : '');
-  revealObs.observe(el);
-});
-
-// ═══════════════════════════════════════
+// ═══════════════════════════════════════════
 // COUNTER ANIMATION
-// ═══════════════════════════════════════
-const counters = document.querySelectorAll('.stat-big[data-target]');
-const countObs = new IntersectionObserver((entries) => {
-  entries.forEach(e => {
-    if (!e.isIntersecting) return;
-    const el = e.target;
+// ═══════════════════════════════════════════
+let countersAnimated = false;
+function animateCounters() {
+  if (countersAnimated) return;
+  countersAnimated = true;
+  document.querySelectorAll('.stat-big[data-target]').forEach(el => {
     const target = +el.dataset.target;
     let count = 0;
-    const step = Math.ceil(target / 40);
+    const step = Math.ceil(target / 30);
     const id = setInterval(() => {
       count = Math.min(count + step, target);
       el.textContent = count;
       if (count >= target) clearInterval(id);
-    }, 35);
-    countObs.unobserve(el);
+    }, 40);
   });
-}, { threshold: 0.5 });
-counters.forEach(c => countObs.observe(c));
+}
 
-// ═══════════════════════════════════════
-// HERO HEADLINE — text glitch on hover
-// ═══════════════════════════════════════
+// ═══════════════════════════════════════════
+// HEADLINE TEXT GLITCH HOVER
+// ═══════════════════════════════════════════
 document.querySelectorAll('.hero-headline .line').forEach(line => {
   const original = line.textContent.trim();
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#%&';
@@ -87,25 +127,6 @@ document.querySelectorAll('.hero-headline .line').forEach(line => {
       }).join('');
       iter += 0.5;
       if (iter >= original.length) { line.textContent = original; clearInterval(line._glitch); }
-    }, 40);
+    }, 35);
   });
-});
-
-// ═══════════════════════════════════════
-// NAVBAR — scroll shrink (frame-top)
-// ═══════════════════════════════════════
-const frameTop = document.querySelector('.frame-top');
-window.addEventListener('scroll', () => {
-  frameTop.style.borderBottomWidth = window.scrollY > 10 ? '1px' : '1px';
-}, { passive: true });
-
-// ═══════════════════════════════════════
-// MARQUEE — pause on hover
-// ═══════════════════════════════════════
-const track = document.querySelector('.marquee-track');
-document.querySelector('.marquee-wrap').addEventListener('mouseenter', () => {
-  track.style.animationPlayState = 'paused';
-});
-document.querySelector('.marquee-wrap').addEventListener('mouseleave', () => {
-  track.style.animationPlayState = 'running';
 });
