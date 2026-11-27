@@ -1,5 +1,5 @@
 // ══════════════════════════════════════════════
-// SCENE SYSTEM
+// CONTINUOUS 3D DEPTH & KINETIC SCENE SYSTEM
 // ══════════════════════════════════════════════
 
 const scenes = [
@@ -10,88 +10,86 @@ const scenes = [
   document.getElementById('sceneContact')
 ];
 
-const navSteps      = document.querySelectorAll('.nav-step');
-const glow1         = document.querySelector('.glow-1');
-const glow2         = document.querySelector('.glow-2');
-const glow3         = document.querySelector('.glow-3');
-const transition    = document.getElementById('pageTransition');
-const sceneCounter  = document.getElementById('sceneCounter');
+const navSteps          = document.querySelectorAll('.nav-step');
+const glow1             = document.querySelector('.glow-1');
+const glow2             = document.querySelector('.glow-2');
+const glow3             = document.querySelector('.glow-3');
+const sceneCounter      = document.getElementById('sceneCounter');
+const scrollProgressBar = document.getElementById('scrollProgressBar');
+const portalHalo        = document.getElementById('portalHalo');
 
 let currentSceneIndex = 0;
-let pendingSceneIndex = 0;
-let isTransitioning   = false;
-
-// Timing constants (match CSS)
-const CLOSE_MS = 760; // var(--tt) 0.72s + stagger 0.16s
-const OPEN_MS  = 760;
+let targetProgress    = 0;
+let smoothProgress    = 0;
 
 // ══════════════════════════════════════════════
-// WEFLASH-STYLE TRANSITION
+// DIRECTION-AWARE SCENE SWITCH (ZERO LOCKS)
 // ══════════════════════════════════════════════
-function switchScene(nextIndex) {
-  pendingSceneIndex = nextIndex;
-  if (nextIndex === currentSceneIndex || isTransitioning) return;
-  isTransitioning = true;
+function setActiveScene(nextIndex) {
+  if (nextIndex === currentSceneIndex) return;
+  currentSceneIndex = nextIndex;
 
-  // --- Phase 1: Blocks drop down (cover screen) ---
-  transition.classList.remove('opening');
-  transition.classList.add('closing');
+  // Assign depth state classes (.past / .active / .future)
+  scenes.forEach((scene, i) => {
+    scene.classList.remove('past', 'active', 'future');
+    if (i < nextIndex)       scene.classList.add('past');
+    else if (i === nextIndex) scene.classList.add('active');
+    else                     scene.classList.add('future');
+  });
 
-  setTimeout(() => {
-    const target = pendingSceneIndex;
-    // Hidden behind blocks — swap scenes
-    scenes[currentSceneIndex].classList.remove('active');
-    scenes[target].classList.add('active');
+  navSteps.forEach((step, i) => step.classList.toggle('active', i === nextIndex));
+  document.body.classList.toggle('contact-active', nextIndex === 4);
 
-    navSteps.forEach((step, i) => step.classList.toggle('active', i === target));
-    document.body.classList.toggle('contact-active', target === 4);
+  if (sceneCounter) sceneCounter.textContent = `0${nextIndex + 1} / 05`;
 
-    // Update scene counter
-    if (sceneCounter) sceneCounter.textContent = `0${target + 1} / 05`;
+  // Pulse subtle portal ring
+  if (portalHalo) {
+    portalHalo.classList.remove('pulse');
+    void portalHalo.offsetWidth; // restart keyframe cleanly
+    portalHalo.classList.add('pulse');
+  }
 
-    if (target === 2) animateCounters();
-    currentSceneIndex = target;
-
-    // --- Phase 2: Blocks retract upward (reveal new scene) ---
-    transition.classList.remove('closing');
-    transition.classList.add('opening');
-
-    setTimeout(() => {
-      transition.classList.remove('opening');
-      isTransitioning = false;
-      if (pendingSceneIndex !== currentSceneIndex) {
-        switchScene(pendingSceneIndex);
-      }
-    }, OPEN_MS);
-
-  }, CLOSE_MS);
+  if (nextIndex === 2) animateCounters();
 }
 
 // ══════════════════════════════════════════════
-// SCROLL HANDLER
+// SCROLL LISTENER + SILKY 60FPS RAF LOOP
 // ══════════════════════════════════════════════
-function handleScroll() {
+function updateScrollTarget() {
   const scrollY   = window.scrollY;
   const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-  const progress  = Math.max(0, Math.min(scrollY / (maxScroll || 1), 1));
+  targetProgress  = Math.max(0, Math.min(scrollY / (maxScroll || 1), 1));
 
   const targetIndex = Math.min(
-    Math.round(progress * (scenes.length - 1)),
+    Math.round(targetProgress * (scenes.length - 1)),
     scenes.length - 1
   );
 
-  switchScene(targetIndex);
-
-  // Ambient glow parallax
-  if (glow1 && glow2 && glow3) {
-    glow1.style.transform = `translate(${progress * -80}px, ${progress * 150}px) scale(${1 + progress * 0.3})`;
-    glow2.style.transform = `translate(${progress * 100}px, ${progress * -120}px) scale(${1 - progress * 0.2})`;
-    glow3.style.transform = `translate(${Math.sin(progress * Math.PI) * 120}px, ${progress * 80}px)`;
-  }
+  setActiveScene(targetIndex);
 }
 
-window.addEventListener('scroll', handleScroll, { passive: true });
-handleScroll();
+window.addEventListener('scroll', updateScrollTarget, { passive: true });
+updateScrollTarget();
+
+function renderLoop() {
+  // Smooth lerp toward target scroll progress
+  smoothProgress += (targetProgress - smoothProgress) * 0.1;
+
+  // Hairline scroll progress bar
+  if (scrollProgressBar) {
+    scrollProgressBar.style.transform = `scaleX(${Math.max(0.02, smoothProgress)})`;
+  }
+
+  // Silky ambient glow parallax
+  if (glow1 && glow2 && glow3) {
+    glow1.style.transform = `translate3d(${smoothProgress * -90}px, ${smoothProgress * 160}px, 0) scale(${1 + smoothProgress * 0.25})`;
+    glow2.style.transform = `translate3d(${smoothProgress * 110}px, ${smoothProgress * -130}px, 0) scale(${1 - smoothProgress * 0.18})`;
+    glow3.style.transform = `translate3d(${Math.sin(smoothProgress * Math.PI) * 140}px, ${smoothProgress * 70}px, 0)`;
+  }
+
+  requestAnimationFrame(renderLoop);
+}
+requestAnimationFrame(renderLoop);
 
 // ══════════════════════════════════════════════
 // NAV STEP CLICK → SMOOTH SCROLL
