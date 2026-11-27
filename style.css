@@ -116,7 +116,7 @@ img { display: block; max-width: 100%; }
 }
 .social { transition: opacity 0.2s; border-bottom: 1px solid transparent; }
 .social:hover { opacity: 0.5; border-bottom-color: currentColor; }
-.copy { margin-left: auto; color: #888; }
+.copy { margin-left: auto; margin-right: 5.5rem; color: #888; }
 
 /* Rotating Badge */
 .rotating-badge {
@@ -138,8 +138,7 @@ img { display: block; max-width: 100%; }
 /* Scene counter */
 .scene-counter {
   position: fixed;
-  right: 2.5rem; top: 50%;
-  transform: translateY(-50%);
+  right: 2.5rem; top: calc(var(--frame-h) + 1.2rem);
   z-index: 999;
   color: #aaa;
   font-size: 0.65rem;
