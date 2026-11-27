@@ -3,32 +3,35 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PORTFOLIO — NHỮ MẠNH LƯƠNG</title>
+  <title>PORTFOLIO – NHỮ MẠNH LƯƠNG</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Barlow+Condensed:wght@700;800;900&family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet" />
 </head>
 <body>
 
-  <!-- Dynamic Ambient Background Glow Canvas / Elements -->
+  <!-- Ambient Glows -->
   <div class="ambient-glow glow-1"></div>
   <div class="ambient-glow glow-2"></div>
   <div class="ambient-glow glow-3"></div>
 
-  <!-- ═══ CURTAIN TRANSITION OVERLAY ═══ -->
-  <div class="curtain" id="curtain">
-    <div class="curtain-panel panel-a"></div>
-    <div class="curtain-panel panel-b"></div>
+  <!-- ═══ TRANSITION OVERLAY (weflash style) ═══ -->
+  <div class="page-transition" id="pageTransition">
+    <div class="pt-block pt-b1"></div>
+    <div class="pt-block pt-b2"></div>
+    <div class="pt-block pt-b3"></div>
+    <div class="pt-block pt-b4"></div>
+    <div class="pt-block pt-b5"></div>
   </div>
 
-  <!-- ═══ FIXED FRAME ═══ -->
+  <!-- ═══ FIXED FRAME TOP ═══ -->
   <header class="frame-top">
     <span class="mono">NHỮ MẠNH LƯƠNG</span>
     <span class="mono tagline">HỌC SINH × LẬP TRÌNH × THIẾT KẾ</span>
     <a href="#contact" class="mono contact-link" id="navContactLink">LIÊN HỆ ↓</a>
   </header>
 
-  <!-- Progress Indicators / Step Dots on Left -->
+  <!-- Progress Nav Dots -->
   <div class="scroll-nav">
     <div class="nav-step active" data-step="0"><span>01</span></div>
     <div class="nav-step" data-step="1"><span>02</span></div>
@@ -36,6 +39,9 @@
     <div class="nav-step" data-step="3"><span>04</span></div>
     <div class="nav-step" data-step="4"><span>05</span></div>
   </div>
+
+  <!-- Scene counter -->
+  <div class="scene-counter mono" id="sceneCounter">01 / 05</div>
 
   <footer class="frame-bottom">
     <a href="https://www.facebook.com/luonh.nhu130894/?viewas=100000686899395" target="_blank" class="mono social">FACEBOOK</a>
@@ -57,29 +63,30 @@
   <!-- ═══ SCROLL CONTAINER (Tạo chiều dài cuộn ảo) ═══ -->
   <div class="scroll-container" id="scrollContainer">
 
-    <!-- ═══ FIXED VIEWPORT STAGE (Giữ nguyên khung hình, chỉ hiệu ứng biến đổi) ═══ -->
+    <!-- ═══ FIXED VIEWPORT STAGE ═══ -->
     <div class="fixed-stage" id="fixedStage">
 
       <!-- SCENE 1: HERO -->
       <div class="scene scene-hero active" id="sceneHero">
+        <div class="scene-bg sb-hero"></div>
         <div class="hero-inner">
-          <div class="hero-meta mono stagger-elem stagger-delay-1">
+          <div class="hero-meta mono reveal-line" style="--delay:0.1s">
             <span class="dot"></span> AVAILABLE FOR WORK
           </div>
-          <h1 class="hero-headline kinetic-title">
-            <span class="line word-1" data-text="CODE.">CODE.</span>
-            <span class="line line--outline word-2" data-text="LEARN.">LEARN.</span>
-            <span class="line word-3" data-text="REPEAT.">REPEAT.</span>
+          <h1 class="hero-headline">
+            <span class="rl-wrap"><span class="rl" style="--delay:0.15s">CODE.</span></span>
+            <span class="rl-wrap grad-line"><span class="rl" style="--delay:0.25s">LEARN.</span></span>
+            <span class="rl-wrap"><span class="rl" style="--delay:0.35s">REPEAT.</span></span>
           </h1>
-          <div class="hero-sub stagger-elem stagger-delay-3">
-            <p class="mono">Học sinh đam mê lập trình — xây dựng những thứ có giá trị từ con số 0.</p>
-            <div class="hero-scroll mono">LĂN CHUỘT ĐỂ KHÁM PHÁ ↓</div>
+          <div class="hero-sub">
+            <p class="mono reveal-line" style="--delay:0.5s">Học sinh đam mê lập trình – xây dựng những thứ có giá trị từ con số 0.</p>
+            <div class="hero-scroll mono reveal-line" style="--delay:0.65s">LĂN CHUỘT ĐỂ KHÁM PHÁ ↓</div>
           </div>
         </div>
 
         <div class="hero-interactive-visual">
           <div class="visual-card-wrap" id="heroVisualWrap">
-            <img src="img1.jpg" alt="Ảnh Nhu Manh Luong" class="hero-main-img" />
+            <img src="img1.jpg" alt="Ảnh Nhữ Mạnh Lương" class="hero-main-img" />
             <div class="visual-glow-card"></div>
           </div>
         </div>
@@ -87,39 +94,44 @@
 
       <!-- SCENE 2: MARQUEE SPECTRUM -->
       <div class="scene scene-marquee" id="sceneMarquee">
-        <div class="marquee-giant-title">SKILLS &amp; MINDSET</div>
+        <div class="scene-bg sb-marquee"></div>
+        <div class="marquee-giant-title reveal-line" style="--delay:0.1s">SKILLS &amp; MINDSET</div>
         <div class="marquee-perspective-box">
           <div class="marquee-band b1">
             <span>HTML · CSS · JAVASCRIPT · LẬP TRÌNH · THIẾT KẾ WEB · PROBLEM SOLVING · GITHUB · </span>
             <span>HTML · CSS · JAVASCRIPT · LẬP TRÌNH · THIẾT KẾ WEB · PROBLEM SOLVING · GITHUB · </span>
           </div>
           <div class="marquee-band b2">
-            <span>REACT · CREATIVE CODING · RESPONSIVE · UI/UX · TỰ HỌC · B BẮC THANH LIÊM · </span>
-            <span>REACT · CREATIVE CODING · RESPONSIVE · UI/UX · TỰ HỌC · B BẮC THANH LIÊM · </span>
+            <span>TƯ DUY LOGIC · SÁNG TẠO · KIÊN TRÌ · PHÂN TÍCH · THIẾT KẾ UI/UX · RESPONSIVE · </span>
+            <span>TƯ DUY LOGIC · SÁNG TẠO · KIÊN TRÌ · PHÂN TÍCH · THIẾT KẾ UI/UX · RESPONSIVE · </span>
           </div>
         </div>
       </div>
 
-      <!-- SCENE 3: ABOUT (Biến đổi trực tiếp từ trung tâm) -->
+      <!-- SCENE 3: ABOUT -->
       <div class="scene scene-about" id="sceneAbout">
+        <div class="scene-bg sb-about"></div>
         <div class="about-split">
-          <div class="about-left-art">
+          <div class="about-left-art reveal-block" style="--delay:0.05s">
             <div class="about-img-stage">
               <img src="img2.jpg" alt="Nhữ Mạnh Lương" class="about-portrait" />
               <div class="art-backdrop"></div>
             </div>
           </div>
-          <div class="about-right-info">
-            <div class="label mono stagger-elem stagger-delay-1">[ VỀ MÌNH ]</div>
-            <h2 class="section-heading kinetic-title">CHÀO.<br/>MÌNH LÀ<br/><em>LƯƠNG.</em></h2>
-            <p class="body-text stagger-elem stagger-delay-2">
-              Mình là Nhữ Mạnh Lương — một học sinh THPT B Thanh Liêm yêu thích thế giới lập trình.
-              Với mình, code không đơn thuần là những dòng lệnh mà là cây bút để sáng tạo ra những trải nghiệm độc đáo.
+          <div class="about-right">
+            <div class="label mono reveal-line" style="--delay:0.1s">[ VỀ MÌNH ]</div>
+            <h2 class="section-heading">
+              <span class="rl-wrap"><span class="rl" style="--delay:0.18s">XIN CHÀO,</span></span>
+              <span class="rl-wrap"><span class="rl" style="--delay:0.28s">MÌNH LÀ</span></span>
+              <span class="rl-wrap grad-line"><span class="rl" style="--delay:0.38s">LƯƠNG.</span></span>
+            </h2>
+            <p class="body-text reveal-line" style="--delay:0.5s">
+              Mình là Nhữ Mạnh Lương – học sinh THPT đam mê lập trình. Với mình, code không đơn thuần là những dòng lệnh mà là cây bút để sáng tạo ra những trải nghiệm độc đáo.
             </p>
-            <p class="body-text stagger-elem stagger-delay-3">
+            <p class="body-text reveal-line" style="--delay:0.62s">
               Hiện tại mình đang trau dồi sâu về nền tảng Web &amp; thuật toán, sẵn sàng cho những dự án lớn hơn trong tương lai.
             </p>
-            <div class="stats-row stagger-elem stagger-delay-4">
+            <div class="stats-row reveal-line" style="--delay:0.75s">
               <div class="stat-item">
                 <span class="stat-big mono" data-target="1">0</span>
                 <span class="stat-label mono">DỰ ÁN</span>
@@ -139,27 +151,31 @@
 
       <!-- SCENE 4: EDUCATION / TIMELINE MATRIX -->
       <div class="scene scene-edu" id="sceneEdu">
+        <div class="scene-bg sb-edu"></div>
         <div class="edu-shell">
           <div class="section-header">
-            <div class="label mono">[ HỌC VẤN &amp; LỘ TRÌNH ]</div>
-            <h2 class="section-heading">HÀNH TRÌNH<br/>PHÁT TRIỂN.</h2>
+            <div class="label mono reveal-line" style="--delay:0.05s">[ HỌC VẤN &amp; LỘ TRÌNH ]</div>
+            <h2 class="section-heading">
+              <span class="rl-wrap"><span class="rl" style="--delay:0.12s">HÀNH TRÌNH</span></span>
+              <span class="rl-wrap grad-line"><span class="rl" style="--delay:0.22s">PHÁT TRIỂN.</span></span>
+            </h2>
           </div>
           <div class="edu-matrix">
-            <div class="matrix-card" data-index="1">
+            <div class="matrix-card reveal-block" style="--delay:0.3s" data-index="1">
               <div class="card-num mono">01</div>
               <div class="card-year mono">2023 → NAY</div>
               <h3>THPT B Thanh Liêm</h3>
               <p class="tag mono">HỌC SINH THPT · HÀ NAM</p>
               <p class="desc">Rèn luyện tư duy logic, tự nghiên cứu công nghệ và lập trình web từ những bước cơ bản.</p>
             </div>
-            <div class="matrix-card" data-index="2">
+            <div class="matrix-card reveal-block" style="--delay:0.45s" data-index="2">
               <div class="card-num mono">02</div>
               <div class="card-year mono">2026</div>
               <h3>Tự Học Lập Trình</h3>
               <p class="tag mono">HTML · CSS · JAVASCRIPT</p>
               <p class="desc">Tự tay thiết kế và lập trình Portfolio tương tác cá nhân với tư duy giao diện hiện đại.</p>
             </div>
-            <div class="matrix-card" data-index="3">
+            <div class="matrix-card reveal-block" style="--delay:0.6s" data-index="3">
               <div class="card-num mono">03</div>
               <div class="card-year mono">TƯƠNG LAI</div>
               <h3>Mục Tiêu Lớn</h3>
@@ -170,16 +186,19 @@
         </div>
       </div>
 
-      <!-- SCENE 5: CONTACT (Sân khấu đen huyền bí mở rộng) -->
+      <!-- SCENE 5: CONTACT -->
       <div class="scene scene-contact" id="sceneContact">
+        <div class="scene-bg sb-contact"></div>
         <div class="contact-inner-portal">
-          <div class="label mono stagger-elem stagger-delay-1">[ KẾT NỐI ]</div>
-          <h2 class="contact-cta kinetic-title">
-            CÙNG TẠO NÊN<br/>
-            ĐIỀU GÌ ĐÓ?<br/>
-            <a href="mailto:nhumanhluong2010@gmail.com" class="cta-link">NHẮN MÌNH NGAY. →</a>
+          <div class="label mono reveal-line" style="--delay:0.05s">[ KẾT NỐI ]</div>
+          <h2 class="contact-cta">
+            <span class="rl-wrap"><span class="rl" style="--delay:0.12s">CÙNG TẠO NÊN</span></span>
+            <span class="rl-wrap"><span class="rl" style="--delay:0.22s">ĐIỀU GÌ ĐÓ</span></span>
+            <span class="rl-wrap grad-line"><span class="rl" style="--delay:0.32s">
+              <a href="mailto:nhumanhluong2010@gmail.com" class="cta-link">NHẮN MÌNH NGAY. →</a>
+            </span></span>
           </h2>
-          <div class="contact-details stagger-elem stagger-delay-3">
+          <div class="contact-details reveal-line" style="--delay:0.5s">
             <div class="contact-col">
               <span class="mono label-sm">EMAIL</span>
               <a href="mailto:nhumanhluong2010@gmail.com" class="mono contact-val">nhumanhluong2010@gmail.com</a>
