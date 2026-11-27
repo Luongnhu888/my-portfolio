@@ -1,6 +1,38 @@
 // ═══════════════════════════════════════════
-// FIXED SCENE SCROLL ENGINE
+// KINETIC LETTER WRAPPER (Chia từng chữ thành thẻ span nhảy múa)
 // ═══════════════════════════════════════════
+function wrapKineticLetters() {
+  document.querySelectorAll('.kinetic-title').forEach(title => {
+    // Traverse text nodes or specific child lines
+    const walker = document.createTreeWalker(title, NodeFilter.SHOW_TEXT, null, false);
+    const textNodes = [];
+    while (walker.nextNode()) {
+      if (walker.currentNode.nodeValue.trim().length > 0) {
+        textNodes.push(walker.currentNode);
+      }
+    }
+    textNodes.forEach(node => {
+      const text = node.nodeValue;
+      const frag = document.createDocumentFragment();
+      let delay = 0.05;
+      for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+        if (char === ' ') {
+          frag.appendChild(document.createTextNode(' '));
+        } else {
+          const span = document.createElement('span');
+          span.className = 'kinetic-char';
+          span.textContent = char;
+          span.style.transitionDelay = `${delay}s`;
+          delay += 0.035;
+          frag.appendChild(span);
+        }
+      }
+      node.parentNode.replaceChild(frag, node);
+    });
+  });
+}
+wrapKineticLetters();
 
 const scenes = [
   document.getElementById('sceneHero'),
