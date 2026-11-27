@@ -46,39 +46,52 @@ const navSteps = document.querySelectorAll('.nav-step');
 const glow1 = document.querySelector('.glow-1');
 const glow2 = document.querySelector('.glow-2');
 const glow3 = document.querySelector('.glow-3');
-let currentSceneIndex = 0;
+const curtain = document.getElementById('curtain');
 
-// Update Scene Transition smoothly based on Scroll Percentage
-function updateScrollExperience() {
+let currentSceneIndex = 0;
+let isTransitioning = false;
+
+// ── Curtain transition between scenes ──────────────────────
+function switchScene(nextIndex) {
+  if (nextIndex === currentSceneIndex || isTransitioning) return;
+  isTransitioning = true;
+
+  // Phase 1: Close curtain (sweep down)
+  curtain.classList.remove('opening');
+  curtain.classList.add('closing');
+
+  setTimeout(() => {
+    // Hidden behind curtain — swap active scene
+    scenes[currentSceneIndex].classList.remove('active');
+    scenes[nextIndex].classList.add('active');
+
+    navSteps.forEach((step, i) => step.classList.toggle('active', i === nextIndex));
+    document.body.classList.toggle('contact-active', nextIndex === 4);
+
+    if (nextIndex === 2) animateCounters();
+    currentSceneIndex = nextIndex;
+
+    // Phase 2: Open curtain (sweep up)
+    curtain.classList.remove('closing');
+    curtain.classList.add('opening');
+
+    setTimeout(() => {
+      curtain.classList.remove('opening');
+      isTransitioning = false;
+    }, 480);
+
+  }, 480);
+}
+
+function handleScroll() {
   const scrollY = window.scrollY;
   const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
   const progress = Math.max(0, Math.min(scrollY / (maxScroll || 1), 1));
 
-  // Determine active scene (5 scenes: 0.0 -> 1.0)
-  const totalScenes = scenes.length;
-  let activeIndex = Math.floor(progress * totalScenes);
-  if (activeIndex >= totalScenes) activeIndex = totalScenes - 1;
+  const targetIndex = Math.min(Math.floor(progress * scenes.length), scenes.length - 1);
+  switchScene(targetIndex);
 
-  if (activeIndex !== currentSceneIndex) {
-    currentSceneIndex = activeIndex;
-    scenes.forEach((scene, i) => {
-      scene.classList.toggle('active', i === currentSceneIndex);
-    });
-
-    navSteps.forEach((step, i) => {
-      step.classList.toggle('active', i === currentSceneIndex);
-    });
-
-    // Dark mode transition for Contact Scene
-    document.body.classList.toggle('contact-active', currentSceneIndex === 4);
-
-    // Trigger counters on About Scene
-    if (currentSceneIndex === 2) {
-      animateCounters();
-    }
-  }
-
-  // Dynamic ambient glow parallax based on scroll
+  // Ambient glow parallax
   if (glow1 && glow2 && glow3) {
     glow1.style.transform = `translate(${progress * -80}px, ${progress * 150}px) scale(${1 + progress * 0.3})`;
     glow2.style.transform = `translate(${progress * 100}px, ${progress * -120}px) scale(${1 - progress * 0.2})`;
@@ -86,8 +99,8 @@ function updateScrollExperience() {
   }
 }
 
-window.addEventListener('scroll', updateScrollExperience, { passive: true });
-updateScrollExperience(); // Initial run
+window.addEventListener('scroll', handleScroll, { passive: true });
+handleScroll();
 
 // Click on left navigation steps to smoothly jump to scenes
 navSteps.forEach(step => {

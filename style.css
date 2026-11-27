@@ -590,6 +590,46 @@ body.contact-active .scroll-nav .nav-step { color: #555; }
 body.contact-active .scroll-nav .nav-step.active { color: #fff; }
 
 /* ═══════════════════════════════════════════
+   CURTAIN TRANSITION OVERLAY
+═══════════════════════════════════════════ */
+.curtain {
+  position: fixed;
+  inset: 0;
+  z-index: 5000;
+  pointer-events: none;
+  display: flex;
+}
+
+.curtain-panel {
+  flex: 1;
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 0.45s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+.panel-a {
+  background: linear-gradient(160deg, #6366f1 0%, #8b5cf6 100%);
+}
+
+.panel-b {
+  background: linear-gradient(160deg, #ec4899 0%, #f59e0b 100%);
+}
+
+/* Phase 1 — Curtain sweeps DOWN to cover */
+.curtain.closing .curtain-panel {
+  transform: scaleY(1);
+  transform-origin: top;
+  transition-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+/* Phase 2 — Curtain sweeps UP to uncover */
+.curtain.opening .curtain-panel {
+  transform: scaleY(0);
+  transform-origin: bottom;
+  transition: transform 0.45s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+/* ═══════════════════════════════════════════
    MOBILE RESPONSIVE
 ═══════════════════════════════════════════ */
 @media (max-width: 820px) {
